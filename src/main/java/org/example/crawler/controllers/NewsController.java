@@ -2,6 +2,8 @@ package org.example.crawler.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.example.crawler.entities.News;
+import org.example.crawler.repositories.NewsRepository;
+import org.example.crawler.services.NewsCrawlerService;
 import org.example.crawler.services.NewsService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/news")
 @RequiredArgsConstructor
 public class NewsController {
     private final NewsService newsService;
+    private final NewsCrawlerService newsCrawlerService;
+    private final NewsRepository newsRepository;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getNews(
@@ -61,9 +66,33 @@ public class NewsController {
         if (!"secret-api-key".equals(apiKey)) {
             return ResponseEntity.status(403).build();
         }
-
-        // В реальном проекте нужно добавить логику добавления новости
-        return ResponseEntity.ok(Map.of("result", "OK"));
+        News news = newsCrawlerService.processNews(url);
+        if (news == null) {
+            return ResponseEntity.ok(Map.of("result", "WRONG: can't parse news on url: " + url));
+        }
+        Optional<News> oldNewsOptional = newsRepository.findByUrl(url);
+        if (oldNewsOptional.isPresent()) {
+            News oldNews = oldNewsOptional.get();
+            news.setId(oldNews.getId());
+            if (!(oldNews.getCategory().getId().equals(news.getCategory().getId())) ||
+                    !(oldNews.getTitle().equals(news.getTitle())) ||
+                    !(oldNews.getContent().equals(news.getContent())) ||
+                    !(oldNews.getAuthor().getId().equals(news.getAuthor().getId())) ||
+                    !(oldNews.getPublicationDate().equals(news.getPublicationDate())))
+            {
+                newsRepository.save(news);
+                return ResponseEntity.ok(Map.of("result", String.format("News updated: %s", news.getUrl())));
+            }
+            else {
+                oldNews.setCreatedAt(LocalDateTime.now());
+                newsRepository.save(oldNews);
+                return ResponseEntity.ok(Map.of("result", String.format("News up to date: %s", news.getUrl())));
+            }
+        }
+        else {
+            newsRepository.save(news);
+            return ResponseEntity.ok(Map.of("result", "OK"));
+        }
     }
 
     @DeleteMapping("/{id}")

@@ -295,7 +295,7 @@ public class NewsCrawlerService {
         printTextInMultiThread("End process cluster: " + url);
     }
     //process news
-    private News processNews(String url) {
+    public News processNews(String url) {
         //create news and set url for news
         News news = new News();
         news.setUrl(url);
