@@ -1,9 +1,8 @@
 package org.example.crawler.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import java.util.Set;
 
 @Data
@@ -22,6 +21,7 @@ public class Author {
     private String email;
 
     @OneToMany(mappedBy = "author")
+    @JsonIgnore
     private Set<News> news;
 
     public Author() {

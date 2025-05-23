@@ -10,7 +10,5 @@ import java.util.Optional;
 public interface CrawlLogRepository extends JpaRepository<CrawlLog, Long> {
     List<CrawlLog> findTop10ByOrderByCrawlTimeDesc();
 
-    Optional<CrawlLog> findTopByOrderByCrawlTimeDesc();
-
     Optional<CrawlLog> findFirstByOrderByCrawlTimeDesc();
 }

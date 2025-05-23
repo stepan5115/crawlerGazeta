@@ -19,6 +19,10 @@ public class NewsService {
     public List<News> getFilteredNews(String category, String author,
                                       LocalDateTime dateFrom, LocalDateTime dateTo,
                                       int limit) {
+        if (category != null)
+            category = "%" + category.toLowerCase() + "%";
+        if (author != null)
+            author = "%" + author.toLowerCase() + "%";
         return newsRepository.findFilteredNews(category, author, dateFrom, dateTo)
                 .stream()
                 .limit(limit)

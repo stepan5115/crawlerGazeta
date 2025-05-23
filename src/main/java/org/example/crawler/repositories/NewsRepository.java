@@ -12,10 +12,10 @@ import java.util.Optional;
 //class that need to work with news table
 public interface NewsRepository extends JpaRepository<News, Long> {
     @Query("SELECT n FROM News n WHERE " +
-            "(:category IS NULL OR n.category.name = :category) AND " +
-            "(:author IS NULL OR n.author.name = :author) AND " +
-            "(:dateFrom IS NULL OR n.publicationDate >= :dateFrom) AND " +
-            "(:dateTo IS NULL OR n.publicationDate <= :dateTo)")
+            "(:category IS NULL OR LOWER(n.category.name) LIKE :category) AND " +
+            "(:author IS NULL OR LOWER(n.author.name) LIKE :author) AND " +
+            "(CAST(:dateFrom AS timestamp) IS NULL OR n.publicationDate >= :dateFrom) AND " +
+            "(CAST(:dateTo AS timestamp) IS NULL OR n.publicationDate <= :dateTo)")
     List<News> findFilteredNews(
             @Param("category") String category,
             @Param("author") String author,
