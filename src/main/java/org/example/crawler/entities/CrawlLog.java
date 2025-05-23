@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "crawl_log")
+//class that represent crawler log table
 public class CrawlLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

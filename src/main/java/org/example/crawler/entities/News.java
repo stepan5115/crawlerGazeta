@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "news", uniqueConstraints = {
         @UniqueConstraint(columnNames = "url")
 })
+//class that represent news table
 public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

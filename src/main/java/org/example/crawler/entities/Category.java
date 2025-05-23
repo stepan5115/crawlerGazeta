@@ -10,6 +10,7 @@ import java.util.Set;
 @Table(name = "categories", uniqueConstraints = {
         @UniqueConstraint(columnNames = "name")
 })
+//class that represent category table
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

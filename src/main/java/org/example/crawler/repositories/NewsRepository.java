@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+//class that need to work with news table
 public interface NewsRepository extends JpaRepository<News, Long> {
     @Query("SELECT n FROM News n WHERE " +
             "(:category IS NULL OR n.category.name = :category) AND " +
